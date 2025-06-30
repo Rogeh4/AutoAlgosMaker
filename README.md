@@ -1,1 +1,1 @@
-automatically parses and solves labs by algorithms
+automatically parses and solves labs

@@ -26,21 +26,16 @@ Launch the main script and follow the prompts:
 `python main.py`
 
 
-Surname: Used for directory naming (All_Labs_Surname).
-Year: Defines the course source (e.g., 2025).
-Modes: Enter 'all' to sync everything or specific numbers (e.g., 1 2 5) to target labs.
+* Surname: Used for directory naming (All_Labs_Surname).
+* Year: Defines the course source (e.g., 2025).
+* Modes: Enter 'all' to sync everything or specific numbers (e.g., 1 2 5) to target labs.
 
 
 ## Project Structure
 
-`main.py: The entry point and user interface.
-
-src/core.py: Orchestrates the parsing, solving, and saving workflow.
-
-src/parser.py: Scrapes lab data from the university website.
-
-src/llm_client.py: Handles communication with the AI and code extraction.
-
-src/file_manager.py: Manages the local file system and skipping logic.
-
-data/: Your local repository of solved assignments.`
+* main.py: The entry point and user interface.
+* src/core.py: Orchestrates the parsing, solving, and saving workflow.
+* src/parser.py: Scrapes lab data from the university website.
+* src/llm_client.py: Handles communication with the AI and code extraction.
+* src/file_manager.py: Manages the local file system and skipping logic.
+* data/: Your local repository of solved assignments.

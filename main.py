@@ -1,56 +1,41 @@
-from OpenRouterFuncs import make_answer_string
-from ParserFuncs import *
-from utilits import create_file
-import os
+import sys
+from src.core import KMCore
 
-def main(surname, main_folder= "result", log=False):
-    if log: print("started main")
-    # Создаем основную папку для всех лаб
-    if not os.path.exists(main_folder):
-        os.makedirs(main_folder)
+def main():
 
-    # Получаем ссылки на каждую лабораторную urls - словарь вида lab_num : url
-    urls = get_urls()
-    if log:
-        print("urls: ")
-        for i in urls:
-            print(f"{i} : {urls[i]}")
-    # Перебираем все ссылки в urls
-    for lab_num, url in urls.items():
-        # название директории со всеми заданиями (теперь внутри основной папки)
-        filename = os.path.join(main_folder, str(lab_num) + "_" + surname)
 
-        if log: print(f"\nLab {lab_num}: {url} Parsing...\n\n")
 
-        # Достаем текст всей лабы, доп условие (requirements) и дробим текст на задания
-        text = url_parser(url)
-        requirements = make_requirements(text)
-        tasks = make_tasks(text)
+    last_name = input("Enter your surname: ").strip()
+    year = input("Enter your year (at the start of your course ").strip() or "2025"
 
-        if log: print(f"Lab {lab_num} Parsing Complete:\n"
-                      f"Tasks: {list(tasks.keys())}\n"
-                      f"Requirements: {requirements}\n")
 
-        # Создаем папку для лабы, если ее нет
-        if not os.path.exists(filename):
-            os.makedirs(filename)
+    #загрузятся конфиги, промпты и создастся папка data/All_Labs_фамилия
+    try:
+        core = KMCore(last_name=last_name, year=year)
+    except ValueError as e:
+        print(e)
+        sys.exit(1)
 
-        # Решаем по очереди задачи, если уже есть то пропускаем
-        for task_name, task in tasks.items():
-            if log: print(f"Solving Task ({task_name})...")
-            task_path = os.path.join(filename, task_name)
-            if os.path.exists(task_path):
-                if log: print(f"Lab {lab_num}: {task_name} Already Exists\n")
-                continue
-            answer = make_answer_string(task, requirements)
+    print("\nModes:")
+    print(" - enter 'All' to Solve All labs")
+    print(" - enter numbers thro space (for example, '1 6'), to solve chosen labs.")
 
-            if log: print(f"Task Solved\n")
+    choice = input("\nYour choice: ").strip().lower()
 
-            create_file(filename, task_name, answer)
+    target_nums = []
+    if choice != 'all' and choice != '':
+        # Парсим строку '1 2 6' -> [1, 2, 6]
+        target_nums = [int(n) for n in choice.split() if n.isdigit()]
+        if not target_nums:
+            print("Wrong Labs numbers")
+            return
 
+    print(f"\nSolving labs for {last_name} year: {year}...")
+    core.run(target_nums)
 
 if __name__ == "__main__":
-    log = bool(input("Нажмите enter что бы отключить логи"))
-    main_folder = input("Введите название папки с ответами")
-    surname = input("Введите вашу фамилию")
-    main(surname, main_folder=main_folder, log=log)
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\nProgram terminated by user.")
+        sys.exit(0)
